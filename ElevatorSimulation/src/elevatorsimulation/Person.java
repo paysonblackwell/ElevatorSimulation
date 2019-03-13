@@ -15,10 +15,15 @@ public class Person
     private String name;
     
     private static Random rand;
+    //Keep track of statistics
+    private int numberOfCycles;
+    
+    
     
     
     public Person(int maxFloor, int currentFloor)
-    {       
+    {           
+        //more likely to go to ground floor
         maxFloorNumber = maxFloor;
         this.currentFloor = currentFloor;
         if(rand == null)
@@ -30,11 +35,30 @@ public class Person
         do
         {
             floorWanted = rand.nextInt((maxFloor));
+            
+            //switch floorWanted for ground floor
+            if(rand.nextInt(10) > 3)
+            {
+                floorWanted = 0;
+            }
+            
         }while(floorWanted == currentFloor);
-        
+         
         //get random letter for name?
         name = "A";
+        
+        numberOfCycles = 0;
     }  
+    
+    public void run()
+    {
+        numberOfCycles++;
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
     
     
     public void setFloor(int f)

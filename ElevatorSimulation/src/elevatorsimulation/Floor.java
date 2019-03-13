@@ -24,6 +24,15 @@ public class Floor
         people = new ArrayList<Person>();
     }
     
+    public boolean hasPeople()
+    {
+        return !people.isEmpty();
+    }
+    
+    public int getFloorNumber()
+    {
+        return floorNumber;
+    }
     
     public void run()
     {
@@ -37,7 +46,16 @@ public class Floor
                 rand = new Random();
             }
 
-            int chance = rand.nextInt(100) + 1;       
+            
+            
+            //more likely to appear if the floor is the ground floor
+            int chance = rand.nextInt(300) + 1;       
+            
+            if(floorNumber == 0)
+            {
+                chance = rand.nextInt(50) + 1;     
+            }
+            
             if(chance <= encounterChance)
             {
                 people.add(new Person(maxFloorNumber, floorNumber));
