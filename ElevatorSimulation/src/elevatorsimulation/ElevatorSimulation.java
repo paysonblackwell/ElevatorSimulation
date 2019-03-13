@@ -2,7 +2,23 @@ package elevatorsimulation;
 
 public class ElevatorSimulation
 {
+    /*
+    TODO:
+        
+        The elevator states are all made and called accordingly. 
+            Need to finish the functionality to move People around
     
+        Need update the way elevators set their destinations (use a list of floors on which the passengers on the elevator pressed)
+    
+        Create method in building that will update the elevators destination if a person appeared between them and their destination
+            Maybe change the way elevators react, check each floor if there is a person, if not, move towards destination...
+    
+        Add time keeping for elevator
+        
+        Have building display statistics in toString()
+        
+    
+    */
     public static void main(String[] args)
     {
         Building b = new Building();

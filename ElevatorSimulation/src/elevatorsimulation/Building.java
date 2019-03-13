@@ -62,11 +62,12 @@ public class Building
         if(e.hasPassengers())
         {
             e.goToPassengerDestination();
-            //return;
+            return;
         }
         
         
         //The rest of this only applies to elevators who have no current passengers     
+        
         //find needed floors
         List<Floor> neededFloors = new ArrayList<Floor>();
         
@@ -83,13 +84,19 @@ public class Building
         //get rid of floors that already have an elevator assigned to it  
         for(Floor f: neededFloors)
         {
+            boolean hasFloor = false;
             for(Elevator ele: elevators)
             {
                      //change current destination to a list of floors to check through
                     if(ele.getCurrentDestination() != f.getFloorNumber())
                     {
-                        neededFloors2.add(f);
+                        hasFloor = true;                      
                     }                
+            }
+            
+            if(hasFloor == false)
+            {
+                neededFloors2.add(f);
             }
         }
         
