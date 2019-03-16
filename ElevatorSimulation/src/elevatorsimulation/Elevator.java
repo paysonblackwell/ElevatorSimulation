@@ -1,6 +1,8 @@
 package elevatorsimulation;
 
+import elevatorsimulation.Building.Direction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 /*
     Real elevators has a list of floors that have been pressed, 
@@ -12,65 +14,158 @@ public class Elevator
 {
     public enum State{Open, Shut, Loading, Unloading}
     
+    
+    
+    
+    private Direction currentDirection;
     private Building theBuilding;
     private int currentFloor;
     private int currentDestination;    
     private int maxFloorNumber;
     private List<Person> passengers;
+    private int carryingCapacity;
     private State currentState;
-    private List<Integer> destinations;
+    private boolean[] theButtons;
+    private State theDoor;
+    private ElevatorState elevatorState;
     
-    private boolean buttonPressed;
-    private boolean doorPosition; //true == open, false == closed
     
-    //keep track of: total delievered....
-    
+    //keep track of: total delievered....  
     public Elevator(Building b, int maxFloors, int startingFloor)
     {
         theBuilding = b;
         maxFloorNumber = maxFloors;
         currentFloor = startingFloor;     
         passengers = new ArrayList<Person>();
-        destinations = new ArrayList<Integer>();
-        
-        
-        //replace with list of floors whose buttons have been pressed
-        buttonPressed = false;
-        //get destination
-        
-        
-        
+        carryingCapacity = 5;
+        currentDirection = Direction.Up;
+
+        //Fill up buttons as false
+        theButtons = new boolean[maxFloorNumber+1];
+     
         //start being shut
         currentState = State.Shut;
+        theDoor = State.Shut;
+        elevatorState = new ShutElevator(this);
         
         //find direction for this elevator to go
-        theBuilding.findDestination(this);
-        
-            
-        
+        findNewDestination();
+    }
+    
+    public Building getBuilding()
+    {
+        return theBuilding;
+    }
+    
+    public void openDoor()
+    {
+        theDoor = State.Open;
+    }
+    public void shutDoor()
+    {
+        theDoor = State.Shut;
     }
     
     public void addPerson(Person p)
-    {
+    {     
+        //checking person to make sure that they got on the correct direction, except if we are on the destination
+        if((p.getDirection() != currentDirection) && (currentFloor != currentDestination))
+        {
+            System.out.println("ERROR, Person got on wrong elevator!");
+        }       
+        
+        //Have new person press the wanted floor button
+        theButtons[p.getDestination()] = true;   
+        
+        checkDestination(p.getDestination());
+        goToPassengerDestination();
+                
         passengers.add(p);
     }
+    
+    public boolean canAddAnotherPerson()
+    {     
+        return (passengers.size() - carryingCapacity >= 1);
+    }
+    
+    public void checkDestination(int newPress)
+    {
+        //changes destination to the newPress if it was further along
+        
+        if(currentDirection == Direction.Up)
+        {
+            if(newPress >= currentDestination)
+            {
+                currentDestination = newPress;
+            }  
+            else
+            {
+                System.out.println("ERROR, Person got on wrong elevator!");
+            }
+        }
+        else if(currentDirection == Direction.Down)
+        {
+            if(newPress <= currentDestination)
+            {
+                currentDestination = newPress;
+            }  
+            else
+            {
+                System.out.println("ERROR, Person got on wrong elevator!");
+            }
+        }  
+    }
+    
+    
     
     public void findNewDestination()
     {
         theBuilding.findDestination(this);
+        //change currentMovement
+        
+        if(currentFloor < currentDestination)
+        {
+            currentDirection = Direction.Up;
+        }
+        else
+        {
+            currentDirection = Direction.Down;
+        }
+    }
+    public void addFloorDestination(int id)
+    {
+        theButtons[id] = true;
     }
     
     
     public void goToPassengerDestination()
     {
         //sets destination to the next passenger destination
-        
-        
+        int furthestFloor = 0;
+        for(int i = 0; i <theButtons.length; i++)
+        {
+            if(theButtons[i] == true)
+            {
+                if(Math.abs(currentFloor - i) > furthestFloor)
+                {
+                    furthestFloor = i;
+                }
+            }
+        }       
+        currentDestination = furthestFloor;
+        if(currentFloor - currentDestination > -1)
+        {
+            currentDirection = Direction.Up;
+        }
+        else
+        {
+            currentDirection = Direction.Down;
+        }
     }
     
-    public void moveInDirection(boolean dir)
+    public void moveInDirection()
     {
-        if(dir)
+        if(currentDirection == Direction.Up)
         {
             currentFloor++;
         }
@@ -92,9 +187,28 @@ public class Elevator
     
     public void setCurrentDestination(int d)
     {
+        //checks to see if destination is greater/smaller than current destination
+        
+        
         currentDestination = d;
     }
     
+    public void changeDirection(Direction d)
+    {
+        currentDirection = d;
+    }
+    
+    public Direction getDirection()
+    {
+        return currentDirection;
+    }
+    
+    public int getMaxFloor()
+    {
+        return maxFloorNumber;
+    }
+    
+    //Let people off if it is their destination
     public void gettingOff()
     {
         
@@ -102,27 +216,24 @@ public class Elevator
         {
             if(passengers.get(i).getDestination() == currentFloor)
             {
-                //Move person?
-                
+                //Move person to finished list       
+                theBuilding.addDeliveredPerson(passengers.get(i));
+                passengers.remove(passengers.get(i));          
             }
         }
+        
+        theButtons[currentFloor] = false;
     }
     
-    public void setcurrentState(State s)
+    public boolean checkFloorButton(int id)
+    {
+        return theButtons[id];
+    }
+    
+    public void setCurrentState(State s)
     {
         currentState = s;
-    }
-    
-    public void openDoors()
-    {
-        doorPosition = true;
-    }
-    
-    public void shutDoors()
-    {
-        doorPosition = false;
-    }
-            
+    }            
 
     public int getCurrentFloor()
     {
@@ -141,7 +252,7 @@ public class Elevator
         
         if(passengers.isEmpty())
         {
-            str += "-------------";
+            str += "--"+elevatorState.toString()+"---";
         }
         else
         {
@@ -162,27 +273,24 @@ public class Elevator
     public void run()
     {
         
-        //Should make the objects have static methods instead?     
-        
+        //Should make the objects have static methods instead?           
         if(currentState == State.Open)
-        {
-            ShutElevator op = new ShutElevator(this);
-            op.run();         
+        {           
+            elevatorState = new OpenElevator(this);      
         }
         else if(currentState == State.Shut)
         {
-            ShutElevator sh = new ShutElevator(this);
-            sh.run();       
+            elevatorState = new ShutElevator(this);      
         }
         else if(currentState == State.Loading)
         {
-            LoadingElevator lo = new LoadingElevator(this);
-            lo.run();      
+            elevatorState = new LoadingElevator(this);    
         }
         else if(currentState == State.Unloading)
         {
-            UnloadingElevator un = new UnloadingElevator(this);
-            un.run();    
+            elevatorState = new UnloadingElevator(this); 
         }
+        
+        elevatorState.run();
     }
 }

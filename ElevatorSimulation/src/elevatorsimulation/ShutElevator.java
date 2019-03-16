@@ -15,23 +15,23 @@ public class ShutElevator implements ElevatorState
     {
        // System.out.println("Elevator is Shut on floor: "+e.getCurrentFloor());
         
-        //Move to current goal
-        if(e.getCurrentFloor() == e.getCurrentDestination())
+        // if true, we need to open and let people out
+        if(e.checkFloorButton(e.getCurrentFloor()))
         {
-            //change state to open
-            //e.setcurrentState(Elevator.State.Open);
-            e.findNewDestination();
-        }
-        else if(e.getCurrentDestination() > e.getCurrentFloor())
-        {
-            //going up
-            e.moveInDirection(true);
+            e.setCurrentState(Elevator.State.Open);
         }
         else
         {
-            //doing down
-            e.moveInDirection(false);
+            if(e.getCurrentFloor() == 0 || e.getCurrentFloor() == e.getMaxFloor()-1)
+            {           
+                e.findNewDestination();
+            }
+
+
+            e.moveInDirection();   
         }
+        
+             
         
     }
     

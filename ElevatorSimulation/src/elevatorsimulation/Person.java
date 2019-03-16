@@ -1,5 +1,6 @@
 package elevatorsimulation;
 
+import elevatorsimulation.Building.Direction;
 import java.util.Random;
 
 /*
@@ -18,14 +19,14 @@ public class Person
     //Keep track of statistics
     private int numberOfCycles;
     
+    //wanted direction
+    Direction dir;
     
-    
-    
-    public Person(int maxFloor, int currentFloor)
+    public Person(int maxFloor, int cFloor)
     {           
         //more likely to go to ground floor
         maxFloorNumber = maxFloor;
-        this.currentFloor = currentFloor;
+        this.currentFloor = cFloor;
         if(rand == null)
         {
             rand = new Random();
@@ -44,11 +45,26 @@ public class Person
             
         }while(floorWanted == currentFloor);
          
-        //get random letter for name?
-        name = "A";
         
+        //set up the direction wanted
+        if(floorWanted > currentFloor)
+        {
+            dir = Building.Direction.Up;
+        }
+        else
+        {
+            dir = Building.Direction.Down;
+        }      
+        
+        //get random letter for name?
+        name = "A";       
         numberOfCycles = 0;
     }  
+    
+    public Direction getDirection()
+    {
+        return dir;
+    }
     
     public void run()
     {
@@ -70,23 +86,14 @@ public class Person
         return floorWanted;
     }
     
-    //returns true for up, false if down
-    public boolean getDirection()
-    {
-        if(currentFloor- floorWanted  > 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    
     @Override
     public String toString()
     {
         return "["+name+"]=("+floorWanted+")";
     }
     
+    public int getStatistics()
+    {
+        return numberOfCycles;
+    } 
 }

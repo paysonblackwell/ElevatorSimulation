@@ -8,6 +8,7 @@ import java.util.List;
 */
 public class Building
 {
+    public enum Direction{Up, Down};
     private int floorCount;
     private int elevatorCount;
     private int peopleChance;
@@ -15,6 +16,7 @@ public class Building
     
     private List<Floor> floors;
     private List<Elevator> elevators;
+    private List<Person> deliveredPeople;
     
     public Building()
     {
@@ -51,6 +53,20 @@ public class Building
         {
             elevators.add(new Elevator(this, floorCount,0));
         }      
+        
+        //to store people who are finished
+        deliveredPeople = new ArrayList<Person>();
+    }
+    
+    
+    public void addDeliveredPerson(Person p)
+    {
+        deliveredPeople.add(p);
+    }
+    
+    public Floor getFloor(int floorNum)
+    {
+        return floors.get(floorNum);
     }
     
     
@@ -69,45 +85,13 @@ public class Building
         //The rest of this only applies to elevators who have no current passengers     
         
         //find needed floors
-        List<Floor> neededFloors = new ArrayList<Floor>();
+        List<Floor> neededFloors = getNeededFloors();
         
-        for(Floor f: floors)
-        {
-            if(f.hasPeople())
-            {
-                neededFloors.add(f);
-            }
-        }
-        
-        List<Floor> neededFloors2 = new ArrayList<Floor>();
-        
-        //get rid of floors that already have an elevator assigned to it  
-        for(Floor f: neededFloors)
-        {
-            boolean hasFloor = false;
-            for(Elevator ele: elevators)
-            {
-                     //change current destination to a list of floors to check through
-                    if(ele.getCurrentDestination() != f.getFloorNumber())
-                    {
-                        hasFloor = true;                      
-                    }                
-            }
-            
-            if(hasFloor == false)
-            {
-                neededFloors2.add(f);
-            }
-        }
-        
-        
-        //update list with floors that aren't destinations
-        neededFloors = neededFloors2;
         
         if(neededFloors.isEmpty())
         {
             // go to lobby when no button is waiting
-            e.setCurrentDestination(0);
+            e.setCurrentDestination(5);
         }
         else
         {
@@ -124,8 +108,7 @@ public class Building
                     distance = currentDistance;
                 }
             }
-            
-            e.setCurrentDestination(closest.getFloorNumber());          
+            e.addFloorDestination(closest.getFloorNumber());
         } 
         
     }
@@ -138,16 +121,118 @@ public class Building
         for(int i = 0; i < floorCount; i++)
         {
             floors.get(i).run();
+            
+            
         }
         
+        //Add new people that appear to a specific elevator
+        assignElevators();
         
         for(int i = 0; i < elevatorCount; i++)
         {
+            findDestination(elevators.get(i));
             elevators.get(i).run();
+            
         }  
         
         
+        
+        
     }
+    
+    public void assignElevators()
+    {
+        
+        List<Floor> neededFloors = new ArrayList<Floor>();
+        
+        for(Floor f : neededFloors)
+        { 
+            Elevator closestElevator = null;
+            //how to add a floor when all elevators are going in the opposite direction
+            for(Elevator e: elevators)
+            {
+                if(e.getCurrentFloor() < f.getFloorNumber() && e.getDirection() == Direction.Up)
+                {
+                    if(closestElevator == null)
+                    {
+                        closestElevator = e;
+                    }
+                    else
+                    {
+                        if(closestElevator.getCurrentFloor() < e.getCurrentFloor())
+                        {
+                            closestElevator = e;
+                        }
+                    }
+                }
+                else if (e.getCurrentFloor() > f.getFloorNumber() && e.getDirection() == Direction.Down)
+                {
+                    if(closestElevator == null)
+                    {
+                        closestElevator = e;
+                    }
+                    else
+                    {
+                        if(closestElevator.getCurrentFloor() > e.getCurrentFloor())
+                        {
+                            closestElevator = e;
+                        }
+                    }
+                }
+            }
+            
+            if(closestElevator != null)
+            {
+                closestElevator.addFloorDestination(f.getFloorNumber());
+            }
+            
+            
+        }
+        
+        
+        
+        
+    }
+    
+    public List<Floor> getNeededFloors()
+    {
+        
+        //find all floors with people in them
+        List<Floor> neededFloors = new ArrayList<Floor>();
+        
+        for(Floor f: floors)
+        {
+            if(f.hasPeople())
+            {
+                neededFloors.add(f);
+            }
+        }
+        
+        List<Floor> neededFloors2 = new ArrayList<Floor>();    
+        
+        //get rid of floors that already have an elevator assigned to it  
+        for(Floor f: neededFloors)
+        {
+            boolean hasFloor = false;
+            for(Elevator ele: elevators)
+            {
+                     //change current destination to a list of floors to check through
+                    if(ele.checkFloorButton(f.getFloorNumber()))
+                    {
+                        hasFloor = true;                      
+                    }                
+            }
+            
+            if(hasFloor == false)
+            {
+                neededFloors2.add(f);
+            }
+        }
+        
+        return neededFloors2;
+    }
+    
+    
     
     @Override
     public String toString()

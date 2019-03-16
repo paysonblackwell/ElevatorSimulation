@@ -1,8 +1,5 @@
 package elevatorsimulation;
-
-public class ElevatorSimulation
-{
-    /*
+/*
     TODO:
         
         The elevator states are all made and called accordingly. 
@@ -19,8 +16,10 @@ public class ElevatorSimulation
         
     
     */
+public class ElevatorSimulation
+{  
     public static void main(String[] args)
-    {
+    { 
         Building b = new Building();
         
         while(true)

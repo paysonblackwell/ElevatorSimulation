@@ -1,5 +1,7 @@
 package elevatorsimulation;
 
+import elevatorsimulation.Building.Direction;
+
 /**
 
  @author cutte
@@ -18,9 +20,16 @@ public class UnloadingElevator implements ElevatorState
     {
         //throw error if doors aren't open?
         
-        //check for people to load? //real elevators load everytime...
-            //close if not?
-                  
+        
+        //get people off at current floor
+        e.gettingOff();
+        
+        
+        
+        //real elevators load everytime...
+        e.setCurrentState(Elevator.State.Loading);
+        
+        
         
     }
     

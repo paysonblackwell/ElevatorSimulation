@@ -1,5 +1,6 @@
 package elevatorsimulation;
 
+import elevatorsimulation.Building.Direction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,12 +9,21 @@ public class Floor
 {
     //list of people per floor
     private List<Person> people;
+    
+    //change to up and down people list?
+    
+    
     private int floorNumber;
     private int maxFloorNumber;
     
-    private int maxPeople = 2;
+    private int maxPeople = 3;
     private static Random rand;
     private int encounterChance;
+    
+    //add buttons that people will press
+    private boolean upButton;
+    private boolean downButton;
+    
     
     public Floor(int maxFloor, int floorNum, int chance)
     {
@@ -28,6 +38,58 @@ public class Floor
     {
         return !people.isEmpty();
     }
+    
+    public boolean hasPeopleInDirection(Direction d)
+    {
+        if(d == Direction.Up)
+        {
+            return upButton;
+        }
+        else
+        {
+            return downButton;
+        }
+    }
+    
+    public Person getOldestPerson(Direction d)
+    {
+        //get oldest person in direction
+        Person old;
+        do
+        {
+            old = people.get(0);
+        }while(old.getDirection() != d);
+        
+        for(Person p : people)
+        {
+            if(p.getStatistics() > old.getStatistics() && (p.getDirection() == d))
+            {
+                old = p;
+            }
+        }      
+        return old;
+    }
+    
+    public Person getOldestPerson()
+    {
+        //get oldest person
+        Person old = people.get(0);
+        
+        for(Person p : people)
+        {
+            if(p.getStatistics() > old.getStatistics())
+            {
+                old = p;
+            }
+        }      
+        return old;
+    }
+    
+    public void removePerson(Person p)
+    {
+        people.remove(p);
+    }
+    
     
     public int getFloorNumber()
     {
@@ -46,8 +108,6 @@ public class Floor
                 rand = new Random();
             }
 
-            
-            
             //more likely to appear if the floor is the ground floor
             int chance = rand.nextInt(300) + 1;       
             
@@ -58,11 +118,43 @@ public class Floor
             
             if(chance <= encounterChance)
             {
-                people.add(new Person(maxFloorNumber, floorNumber));
+                Person p = new Person(maxFloorNumber, floorNumber);
+                pressButton(p);
+                
+                people.add(p);
             }
         }
         
+        // for stat tracking
+        for(Person p : people)
+        {
+            p.run();
+        }
+        
+        
     }
+    
+    public void pressButton(Person p)
+    {
+        if(p.getDirection() == Direction.Up)
+        {
+            upButton = true;
+        }else
+        {
+            downButton = true;
+        } 
+    }
+    
+    public boolean hasUpButtonBeenPressed()
+    {
+        return upButton;
+    }
+    
+    public boolean hasDownButtonBeenPressed()
+    {
+        return downButton;
+    }
+    
     
     @Override
     public String toString()
