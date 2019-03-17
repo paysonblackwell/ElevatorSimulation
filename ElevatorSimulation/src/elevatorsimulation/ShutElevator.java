@@ -15,7 +15,7 @@ public class ShutElevator implements ElevatorState
     {
        // System.out.println("Elevator is Shut on floor: "+e.getCurrentFloor());
         
-        // if true, we need to open and let people out
+        // if true, we need to open and let people out/in
         if(e.checkFloorButton(e.getCurrentFloor()))
         {
             e.setCurrentState(Elevator.State.Open);
@@ -27,8 +27,14 @@ public class ShutElevator implements ElevatorState
                 e.findNewDestination();
             }
 
-
+            
             e.moveInDirection();   
+            
+        }
+        
+        if(e.getCurrentFloor() == 0)
+        {
+            //e.changeDirection(Building.Direction.Up);
         }
         
              

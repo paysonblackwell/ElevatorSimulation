@@ -85,7 +85,7 @@ public class Elevator
     
     public boolean canAddAnotherPerson()
     {     
-        return (passengers.size() - carryingCapacity >= 1);
+        return (carryingCapacity - passengers.size()  >= 1);
     }
     
     public void checkDestination(int newPress)
@@ -135,6 +135,11 @@ public class Elevator
     public void addFloorDestination(int id)
     {
         theButtons[id] = true;
+    }
+    
+    public void removeFloorDestination(int id)
+    {
+        theButtons[id] = false;
     }
     
     
@@ -187,9 +192,7 @@ public class Elevator
     
     public void setCurrentDestination(int d)
     {
-        //checks to see if destination is greater/smaller than current destination
-        
-        
+        //checks to see if destination is greater/smaller than current destination    
         currentDestination = d;
     }
     
@@ -249,22 +252,18 @@ public class Elevator
         str += "{";
         
         
+
+        str += "-"+elevatorState.toString()+"-";
+
+        for(Person p: passengers)
+        {
+            str+= p.toString();
+        }
         
-        if(passengers.isEmpty())
-        {
-            str += "--"+elevatorState.toString()+"---";
-        }
-        else
-        {
-            for(Person p: passengers)
-            {
-                str+="["+p.getName()+"]";
-            }
-        }
         //Look at stize of the string and make sure it is the same size...
         
         
-        str += "}";
+        str += "}: F="+currentDestination;
         
         
         return str;

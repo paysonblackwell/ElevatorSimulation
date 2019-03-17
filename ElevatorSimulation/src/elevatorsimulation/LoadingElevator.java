@@ -26,8 +26,19 @@ public class LoadingElevator implements ElevatorState
         Floor f = b.getFloor(e.getCurrentFloor());
         
         //if we are on destination floor, direction doesn't matter!
-        boolean doesDirMatter = !(e.getCurrentDestination() == e.getCurrentFloor());      
+        boolean doesDirMatter = false;//!(e.getCurrentDestination() == e.getCurrentFloor());      
         
+        
+        
+        if(f.hasPeople() && e.canAddAnotherPerson())
+        {
+            Person p = f.getOldestPerson();
+            e.addPerson(p);
+            f.removePerson(p);
+        }
+        
+        //ADD BACK IN!!!
+        /*       
         // Get the person waiting the longest if direction doesn't matter
         if(doesDirMatter == false)
         {
@@ -46,6 +57,7 @@ public class LoadingElevator implements ElevatorState
             e.addPerson(p);
             f.removePerson(p);
         } 
+        */
         
         e.shutDoor();
         
@@ -55,8 +67,13 @@ public class LoadingElevator implements ElevatorState
         //find new destination if we didn't pick anyone up and on destination floor
         if(e.getCurrentDestination() == e.getCurrentFloor())
         {
+            //replace...
             e.findNewDestination();
         }    
+        
+        //remove current floor from directions
+        e.removeFloorDestination(e.getCurrentFloor());
+        
     }
     
     @Override

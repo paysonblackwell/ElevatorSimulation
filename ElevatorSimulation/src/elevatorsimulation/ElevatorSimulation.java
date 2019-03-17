@@ -2,18 +2,11 @@ package elevatorsimulation;
 /*
     TODO:
         
-        The elevator states are all made and called accordingly. 
-            Need to finish the functionality to move People around
-    
-        Need update the way elevators set their destinations (use a list of floors on which the passengers on the elevator pressed)
-    
-        Create method in building that will update the elevators destination if a person appeared between them and their destination
-            Maybe change the way elevators react, check each floor if there is a person, if not, move towards destination...
-    
-        Add time keeping for elevator
+        loading elevator is not loading properly.
+
+        change elevator direction if they don't have a real person. maybe realdestination and one assigned?
         
-        Have building display statistics in toString()
-        
+        change direction when currentDestination is changed?, in findNewDestination?
     
     */
 public class ElevatorSimulation

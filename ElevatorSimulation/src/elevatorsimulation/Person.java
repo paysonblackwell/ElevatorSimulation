@@ -56,8 +56,13 @@ public class Person
             dir = Building.Direction.Down;
         }      
         
-        //get random letter for name?
-        name = "A";       
+        //get random letter for name
+        Random rand = new Random();
+        //random value in ascii range
+        char n = (char) (rand.nextInt((90 - 65) + 1) + 65);
+        
+        
+        name = String.valueOf(n);       
         numberOfCycles = 0;
     }  
     
