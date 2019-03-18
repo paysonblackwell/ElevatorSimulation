@@ -34,7 +34,7 @@ public class ShutElevator implements ElevatorState
         
         if(e.getCurrentFloor() == 0)
         {
-            //e.changeDirection(Building.Direction.Up);
+            e.changeDirection(Building.Direction.Up);
         }
         
              

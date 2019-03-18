@@ -54,10 +54,16 @@ public class Floor
     public Person getOldestPerson(Direction d)
     {
         //get oldest person in direction
+        int index = 0;
         Person old;
         do
         {
-            old = people.get(0);
+            if(index >= people.size())
+            {
+                return null;
+            }
+            old = people.get(index);
+            index++;
         }while(old.getDirection() != d);
         
         for(Person p : people)

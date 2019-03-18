@@ -130,7 +130,7 @@ public class Building
         
         for(int i = 0; i < elevatorCount; i++)
         {
-            findDestination(elevators.get(i));
+            //findDestination(elevators.get(i));
             elevators.get(i).run();
             
         }  
@@ -140,10 +140,19 @@ public class Building
         
     }
     
+    public void batchRun(int amount)
+    {
+        for(int i = 0; i<amount; i++)
+        {
+            this.run();
+        }
+    }
+    
     public void assignElevators()
     {
         
-        List<Floor> neededFloors = new ArrayList<Floor>();
+        List<Floor> neededFloors = getNeededFloors();
+        
         
         for(Floor f : neededFloors)
         { 
@@ -184,14 +193,9 @@ public class Building
             if(closestElevator != null)
             {
                 closestElevator.addFloorDestination(f.getFloorNumber());
-            }
-            
-            
-        }
-        
-        
-        
-        
+                closestElevator.goToPassengerDestination();
+            }           
+        } 
     }
     
     public List<Floor> getNeededFloors()
@@ -233,6 +237,76 @@ public class Building
     }
     
     
+    public int averageTime()
+    {
+        int avg = 0;
+        
+        for(Person p: deliveredPeople)
+        {
+            avg += p.getStatistics();
+        }
+        if(deliveredPeople.size() != 0)
+        {
+            avg /= deliveredPeople.size();
+        }
+        
+        return avg;
+    }
+    
+    public int minTime()
+    {
+        int min = 0;
+        
+        for(int i = 0; i < deliveredPeople.size(); i++)
+        {
+            int current = deliveredPeople.get(i).getStatistics();
+            if(i == 0)
+            {
+                min = current;
+                continue;
+            }
+            if(current < min)
+            {
+                min = current;
+            }
+        }
+        
+        return min;
+    }
+    public int maxTime()
+    {
+        int max = 0;
+        
+        for(int i = 0; i < deliveredPeople.size(); i++)
+        {
+            int current = deliveredPeople.get(i).getStatistics();
+            if(i == 0)
+            {
+                max = current;
+                continue;
+            }
+            if(current > max)
+            {
+                max = current;
+            }
+        }
+        
+        return max;
+    }
+    
+    
+    public String getStatistics()
+    {
+        String s = "";
+        
+        s += "Total People Delivered: "+deliveredPeople.size() + "\t";
+        s += "Average Waiting: "+averageTime()+"\n";
+        
+        s+= "Max Waited: "+maxTime()+"\t\t\t";
+        s+= "Min Waited: "+minTime()+"\t";
+        
+        return s;
+    }
     
     @Override
     public String toString()
@@ -264,7 +338,11 @@ public class Building
             s+= "  --";
             
             s += "||\n";
-        }      
+        }
+        
+        s+= "\n"+getStatistics();
+        
+        s+= "\n";
         
         return s;
     }

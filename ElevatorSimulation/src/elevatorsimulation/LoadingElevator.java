@@ -28,14 +28,41 @@ public class LoadingElevator implements ElevatorState
         //if we are on destination floor, direction doesn't matter!
         boolean doesDirMatter = false;//!(e.getCurrentDestination() == e.getCurrentFloor());      
         
-        
-        
-        if(f.hasPeople() && e.canAddAnotherPerson())
+        if(e.hasPassengers())
         {
-            Person p = f.getOldestPerson();
-            e.addPerson(p);
-            f.removePerson(p);
+            while(f.hasPeopleInDirection(e.getDirection()) && e.canAddAnotherPerson())
+            {
+                Person p = f.getOldestPerson(e.getDirection());
+                if(p == null)
+                {
+                    break;
+                }
+                e.addPerson(p);
+                f.removePerson(p);
+            }
         }
+        else
+        {
+            while(f.hasPeople() && e.canAddAnotherPerson())
+            {
+                Person p = f.getOldestPerson();
+                if(p == null)
+                {
+                    break;
+                }
+                e.addPerson(p);
+                f.removePerson(p);
+            }
+        }
+        
+        
+        
+        /*
+        if((p.getDirection() != currentDirection) && (currentFloor != currentDestination))
+        {
+            System.out.println("ERROR, Person got on wrong elevator!");
+        }    
+        */
         
         //ADD BACK IN!!!
         /*       

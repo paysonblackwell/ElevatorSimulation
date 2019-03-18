@@ -67,12 +67,7 @@ public class Elevator
     }
     
     public void addPerson(Person p)
-    {     
-        //checking person to make sure that they got on the correct direction, except if we are on the destination
-        if((p.getDirection() != currentDirection) && (currentFloor != currentDestination))
-        {
-            System.out.println("ERROR, Person got on wrong elevator!");
-        }       
+    {           
         
         //Have new person press the wanted floor button
         theButtons[p.getDestination()] = true;   
@@ -98,10 +93,6 @@ public class Elevator
             {
                 currentDestination = newPress;
             }  
-            else
-            {
-                System.out.println("ERROR, Person got on wrong elevator!");
-            }
         }
         else if(currentDirection == Direction.Down)
         {
@@ -109,10 +100,6 @@ public class Elevator
             {
                 currentDestination = newPress;
             }  
-            else
-            {
-                System.out.println("ERROR, Person got on wrong elevator!");
-            }
         }  
     }
     
@@ -158,7 +145,7 @@ public class Elevator
             }
         }       
         currentDestination = furthestFloor;
-        if(currentFloor - currentDestination > -1)
+        if(currentFloor - currentDestination <= 0)
         {
             currentDirection = Direction.Up;
         }
@@ -192,7 +179,6 @@ public class Elevator
     
     public void setCurrentDestination(int d)
     {
-        //checks to see if destination is greater/smaller than current destination    
         currentDestination = d;
     }
     
@@ -221,7 +207,8 @@ public class Elevator
             {
                 //Move person to finished list       
                 theBuilding.addDeliveredPerson(passengers.get(i));
-                passengers.remove(passengers.get(i));          
+                passengers.remove(passengers.get(i));     
+                i--;
             }
         }
         
@@ -263,7 +250,7 @@ public class Elevator
         //Look at stize of the string and make sure it is the same size...
         
         
-        str += "}: F="+currentDestination;
+        str += "}: D="+currentDestination;
         
         
         return str;

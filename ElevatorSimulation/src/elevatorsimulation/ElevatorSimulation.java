@@ -15,6 +15,8 @@ public class ElevatorSimulation
     { 
         Building b = new Building();
         
+        b.batchRun(100000);
+        
         while(true)
         {
             
