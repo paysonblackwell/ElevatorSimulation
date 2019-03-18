@@ -148,6 +148,7 @@ public class Building
         }
     }
     
+    //logic used to assign any person to an elevator if they are not currently so
     public void assignElevators()
     {
         
@@ -198,6 +199,7 @@ public class Building
         } 
     }
     
+    //returns a list of floors who have people who have not been assigned to a floor
     public List<Floor> getNeededFloors()
     {
         

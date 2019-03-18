@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*
+    Right now pressing buttons don't do much since building just checks if there is people on the floor or not.
+
+    Logic should be changed to use the buttons
+*/
+
+
 public class Floor
 {
     //list of people per floor
     private List<Person> people;
-    
-    //change to up and down people list?
-    
     
     private int floorNumber;
     private int maxFloorNumber;
@@ -93,6 +97,7 @@ public class Floor
     
     public void removePerson(Person p)
     {
+        //TODO, check if there is a person who doesn't get on but wanted to, and then repress the button if there is
         unPressButton(p);
         people.remove(p);
     }

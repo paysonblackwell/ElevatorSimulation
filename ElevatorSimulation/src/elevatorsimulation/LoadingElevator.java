@@ -15,19 +15,16 @@ public class LoadingElevator implements ElevatorState
     {
         //throw error if doors aren't open?
         
-        //get people off of current floor and turn them into passengers
-            //check capacity of elevator before a person can join
         Building b = e.getBuilding();
-        
-        //get direction we are headed
-        Building.Direction d = e.getDirection();
-        
+
         //Getting floor
         Floor f = b.getFloor(e.getCurrentFloor());
         
         //if we are on destination floor, direction doesn't matter!
         boolean doesDirMatter = false;//!(e.getCurrentDestination() == e.getCurrentFloor());      
         
+        
+        // Adds only people on the floor that want to go the same direction
         if(e.hasPassengers())
         {
             while(f.hasPeopleInDirection(e.getDirection()) && e.canAddAnotherPerson())
@@ -43,6 +40,7 @@ public class LoadingElevator implements ElevatorState
         }
         else
         {
+            // might add a person going in the opposite direction if they are the second one. Needs to change
             while(f.hasPeople() && e.canAddAnotherPerson())
             {
                 Person p = f.getOldestPerson();
@@ -62,9 +60,13 @@ public class LoadingElevator implements ElevatorState
         {
             System.out.println("ERROR, Person got on wrong elevator!");
         }    
+        
+        //get direction we are headed
+        Building.Direction d = e.getDirection();
+        
         */
         
-        //ADD BACK IN!!!
+        //ADD BACK IN!!! Old logic
         /*       
         // Get the person waiting the longest if direction doesn't matter
         if(doesDirMatter == false)

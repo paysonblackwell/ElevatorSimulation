@@ -23,13 +23,9 @@ public class UnloadingElevator implements ElevatorState
         
         //get people off at current floor
         e.gettingOff();
-        
-        
-        
-        //real elevators load everytime...
+          
+        //real elevators load everytime... maybe don't call loading everytime?
         e.setCurrentState(Elevator.State.Loading);
-        
-        
         
     }
     
