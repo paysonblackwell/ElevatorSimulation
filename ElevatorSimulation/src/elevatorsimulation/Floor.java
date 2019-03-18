@@ -93,6 +93,7 @@ public class Floor
     
     public void removePerson(Person p)
     {
+        unPressButton(p);
         people.remove(p);
     }
     
@@ -148,6 +149,17 @@ public class Floor
         }else
         {
             downButton = true;
+        } 
+    }
+    
+    public void unPressButton(Person p)
+    {
+        if(p.getDirection() == Direction.Up)
+        {
+            upButton = false;
+        }else
+        {
+            downButton = false;
         } 
     }
     

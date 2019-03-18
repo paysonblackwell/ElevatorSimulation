@@ -2,20 +2,18 @@ package elevatorsimulation;
 /*
     TODO:
         
-        loading elevator is not loading properly.
-
-        change elevator direction if they don't have a real person. maybe realdestination and one assigned?
-        
-        change direction when currentDestination is changed?, in findNewDestination?
+        Elevator checks floor even when in wrong direction (most apparent when it is a single elevator)
+            Does this since every person is added to an elevator when they spawn, they get assigned to different elevators if there more than one
     
     */
 public class ElevatorSimulation
 {  
     public static void main(String[] args)
     { 
-        Building b = new Building();
+        Building b = new Building(); // default settings, 10 floors and 2 elevators, 5% chance a person appears    
+        //Building b = new Building(25, 3, 3);
         
-        b.batchRun(100000);
+        b.batchRun(1000000);
         
         while(true)
         {

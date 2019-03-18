@@ -49,7 +49,7 @@ public class LoadingElevator implements ElevatorState
                 if(p == null)
                 {
                     break;
-                }
+                }               
                 e.addPerson(p);
                 f.removePerson(p);
             }
